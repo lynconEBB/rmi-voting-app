@@ -7,6 +7,7 @@ import imgui.ImGui;
 public final class Fonts {
     public static ImFont titleFont;
     public static ImFont defaultFont;
+    public static ImFont subtitleFont;
 
     public static void InitFonts() {
         ImFontConfig fontConfig = new ImFontConfig();
@@ -17,5 +18,7 @@ public final class Fonts {
 
         defaultFont = ImGui.getIO().getFonts().addFontDefault();
         titleFont = ImGui.getIO().getFonts().addFontDefault(fontConfig);
+        fontConfig.setSizePixels(16);
+        subtitleFont = ImGui.getIO().getFonts().addFontDefault(fontConfig);
     }
 }

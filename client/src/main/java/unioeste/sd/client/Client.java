@@ -1,5 +1,6 @@
 package unioeste.sd.client;
 
+import imgui.type.ImBoolean;
 import unioeste.sd.common.*;
 import unioeste.sd.common.exceptions.AuthException;
 
@@ -7,9 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Client {
@@ -17,25 +16,57 @@ public class Client {
     private boolean isLogged;
     private User user;
     public List<VotingSimpleDTO>  availableVotings;
-    public VotingUniqueDTO selectedVoting;
+    public volatile VotingUniqueDTO selectedVoting;
+    public Map<String, ImBoolean> userVotes;
 
     public Client() {
         this.isLogged = false;
         this.availableVotings = new ArrayList<>();
-        List<String> options = new ArrayList<>();
-        options.add("ioption1");
-        options.add("ioption2");
-        options.add("ioption4");
-        options.add("ioption3");
-        Voting v = new Voting(12L, new User("4trt","fdsgdf"), "fdsfsd", "fdskljgfd gldf dflkg dflg", options);
-        this.selectedVoting = new VotingUniqueDTO(v,new User("4trt","fdsgdf"));
-        this.selectedVoting.status = VotingStatus.STARTED;
+        this.selectedVoting = null;
+        this.userVotes = new HashMap<>();
     }
 
     public CompletableFuture<Void> requestVote(String option) {
         return CompletableFuture.runAsync(() -> {
+            // Avoid setting checkbox to false
+            if (userVotes.get(option).get() == false) {
+                userVotes.get(option).set(true);
+                return;
+            }
+
             try {
+                for (Map.Entry<String, ImBoolean> userVote : userVotes.entrySet()) {
+                    if (userVote.getValue().get() == true && !userVote.getKey().equals(option)) {
+                        selectedVoting.votes.put(userVote.getKey(), selectedVoting.votes.get(userVote.getKey()) - 1);
+                        userVote.getValue().set(false);
+                    }
+                }
+                selectedVoting.votes.put(option, selectedVoting.votes.get(option) + 1);
+                selectedVoting.voters.put(user.username, option);
+
                 server.vote(user, selectedVoting.id, option);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void requestAdvance() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                switch (selectedVoting.status) {
+                    case CREATED -> selectedVoting.status = VotingStatus.STARTED;
+                    case STARTED -> {
+                        selectedVoting.status = VotingStatus.FINISHED;
+                        int max = selectedVoting.votes.values().stream().mapToInt(v -> v).max().orElse(0);
+                        for (Map.Entry<String, Integer> entry : selectedVoting.votes.entrySet()) {
+                            if (entry.getValue() == max) {
+                                selectedVoting.winners.add(entry.getKey());
+                            }
+                        }
+                    }
+                }
+                server.advanceVoting(user, selectedVoting.id);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -51,6 +82,26 @@ public class Client {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
+        });
+    }
+
+
+    public void setSelectedVoting(Long id) {
+        CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
+            try {
+                selectedVoting = server.getVotingById(user, id);
+                this.userVotes = new HashMap<>();
+                for (Map.Entry<String, Boolean> entry : selectedVoting.userVotes.entrySet()) {
+                    this.userVotes.put(entry.getKey(), new ImBoolean(entry.getValue()));
+                }
+
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        voidCompletableFuture.exceptionally(e -> {
+            System.out.println(e.getMessage());
+            return null;
         });
     }
 
@@ -80,18 +131,8 @@ public class Client {
         this.user = user;
         isLogged = true;
         UpdateTask.startTask(this, server);
-    }
 
-    public void setSelectedVoting(Long id) {
-         CompletableFuture.runAsync(() -> {
-            try {
-                selectedVoting = server.getVotingById(user, id);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
-
     public boolean isLogged() {
         return isLogged;
     }

@@ -100,7 +100,7 @@ public class WelcomeWindow {
                 shouldDisable = true;
             }
             if (ImGui.button("Sign in")) {
-                requestingFuture = CompletableFuture.runAsync(() -> client.requestLogin(username.get(), newPassword.get()));
+                requestingFuture = CompletableFuture.runAsync(() -> client.requestLogin(username.get(), password.get()));
                 requestingFuture.exceptionally(e -> {
                     showLoginMessageError(e.getMessage());
                     return null;

@@ -30,7 +30,6 @@ public class ServerImpl implements Server {
 
     @Override
     public User login(String username, String password) {
-
         if (!users.containsKey(username))
             throw new AuthException("User not found!");
 
@@ -90,7 +89,27 @@ public class ServerImpl implements Server {
 
     @Override
     public void advanceVoting(User user, Long id) throws RemoteException {
-        return;
+        if (!isValidUser(user))
+            throw new AuthException("invalid User!");
+        if (!votings.containsKey(id))
+            throw new InvalidDataException("Could not found voting with id provided!");
+
+        Voting voting = votings.get(id);
+        if (!voting.owner.username.equals(user.username))
+            throw new AuthException("User its not the owner!");
+
+        switch (voting.status) {
+            case CREATED -> voting.status = VotingStatus.STARTED;
+            case STARTED -> {
+                voting.status = VotingStatus.FINISHED;
+                int max = voting.votes.values().stream().mapToInt(v -> v).max().orElse(0);
+                for (Map.Entry<String, Integer> entry : voting.votes.entrySet()) {
+                    if (entry.getValue() == max) {
+                        voting.winners.add(entry.getKey());
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -112,5 +131,4 @@ public class ServerImpl implements Server {
         voting.voters.put(user.username, option);
         voting.votes.put(option, voting.votes.get(option) + 1);
     }
-
 }

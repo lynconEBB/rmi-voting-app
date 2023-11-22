@@ -31,7 +31,7 @@ public class MainWindow extends Application {
     public void process() {
         ImGui.dockSpaceOverViewport(ImGui.getMainViewport());
 
-        if (client.isLogged()) {
+        if (!client.isLogged()) {
             welcomeWindow.draw(client);
             return;
         }

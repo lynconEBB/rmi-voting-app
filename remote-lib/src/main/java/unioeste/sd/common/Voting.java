@@ -21,6 +21,7 @@ public class Voting implements Serializable {
 
     public Map<String, Integer> votes;
     public Map<String, String> voters;
+    public List<String> winners;
 
     public Voting(Long id, User owner, String title, String description, List<String> options) {
         this.id = id;
@@ -29,6 +30,7 @@ public class Voting implements Serializable {
         this.description = description;
         this.voters = new HashMap<>();
         this.votes = new HashMap<>();
+        this.winners = new ArrayList<>();
         for (String option : options) {
             votes.put(option, 0);
         }

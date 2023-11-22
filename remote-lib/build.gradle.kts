@@ -10,7 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.spair:imgui-java-app:1.86.11")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

@@ -72,6 +72,10 @@ public class WelcomeWindow {
             }
             if (ImGui.button("Sign up")) {
                 requestingFuture = CompletableFuture.runAsync(() -> client.requestRegistration(newName.get(), newUsername.get(), newPassword.get()));
+                requestingFuture.exceptionally(e -> {
+                   showRegisterMessageError(e.getMessage());
+                   return null;
+                });
             }
             if (shouldDisable)
                 ImGui.endDisabled();
@@ -97,6 +101,10 @@ public class WelcomeWindow {
             }
             if (ImGui.button("Sign in")) {
                 requestingFuture = CompletableFuture.runAsync(() -> client.requestLogin(username.get(), newPassword.get()));
+                requestingFuture.exceptionally(e -> {
+                    showLoginMessageError(e.getMessage());
+                    return null;
+                });
             }
             if (shouldDisable)
                 ImGui.endDisabled();

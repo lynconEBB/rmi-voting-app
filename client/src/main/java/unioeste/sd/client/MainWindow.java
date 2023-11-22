@@ -7,28 +7,24 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.type.ImBoolean;
 import unioeste.sd.client.ui.Fonts;
 import unioeste.sd.client.ui.ImGuiUtils;
-import unioeste.sd.common.User;
-import unioeste.sd.common.Voting;
+import unioeste.sd.common.VotingSimpleDTO;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainWindow extends Application {
-
     public final WelcomeWindow welcomeWindow;
-    private final Client client;
-    private Voting selectedVoting;
-    private List<Voting> votings;
+    public VotingFormWindow votingFormWindow;
+    private final VotingDetailWindow votingDetailWindow;
+    private final ImBoolean showFormWindow;
+
+    public final Client client;
 
     public MainWindow() {
+        this.votingDetailWindow = new VotingDetailWindow();
         this.welcomeWindow = new WelcomeWindow();
-        this.client = new Client(this);
-        this.votings = new ArrayList<>();
-        this.votings.add(new Voting(new User("fdsfd", "fdsfd", "fdsfds"),"Votacao 1"));
-        this.votings.add(new Voting(new User("fdsfd", "fdsfd", "fdsfds"),"Votacao 1"));
-        this.votings.add(new Voting(new User("fdsfd", "fdsfd", "fdsfds"),"Votacao 1"));
-        this.votings.add(new Voting(new User("fdsfd", "fdsfd", "fdsfds"),"Votacao 1"));
+        this.votingFormWindow = new VotingFormWindow();
+
+        this.showFormWindow = new ImBoolean(false);
+        this.client = new Client();
     }
 
     @Override
@@ -37,30 +33,28 @@ public class MainWindow extends Application {
 
         if (client.isLogged()) {
             welcomeWindow.draw(client);
+            return;
         }
-        else {
-            ImGui.begin("Votings Sidebar");
-            {
-                for (Voting voting : votings) {
-                    VotingItemWidget.draw(voting);
-                }
-            }
-            ImGui.end();
 
-            ImGui.begin("Current Voting");
-            {
-                if (selectedVoting == null) {
-                    ImGui.pushFont(Fonts.titleFont);
-                    String noVotingMessage = "No voting selected, nothing to show here!";
-                    ImGuiUtils.centerNextItem(ImGui.calcTextSize(noVotingMessage));
-                    ImGui.text(noVotingMessage);
-                    ImGui.popFont();
-                } else {
-
-                }
+        ImGui.begin("Votings Sidebar");
+        {
+            ImGuiUtils.centerHorizontally(ImGui.calcTextSize("New Voting").x);
+            if (ImGui.button("New Voting")) {
+                votingFormWindow = new VotingFormWindow();
+                showFormWindow.set(true);
             }
-            ImGui.end();
+            for (VotingSimpleDTO voting : client.availableVotings) {
+                VotingItemWidget.draw(voting, client);
+            }
         }
+        ImGui.end();
+
+        if (showFormWindow.get()) {
+            votingFormWindow.draw(showFormWindow, client);
+        }
+
+        votingDetailWindow.draw(client);
+
     }
 
     @Override

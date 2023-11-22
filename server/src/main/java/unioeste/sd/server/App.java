@@ -25,7 +25,7 @@ public class App {
     }
 
     public void run() throws RemoteException, AlreadyBoundException {
-        ServerImpl server = new ServerImpl(this);
+        ServerImpl server = new ServerImpl();
         Server stub = (Server) UnicastRemoteObject.exportObject(server, 1099);
 
         registry = LocateRegistry.createRegistry(1099);

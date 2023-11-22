@@ -10,12 +10,18 @@ public class ImGuiUtils {
         return centerPosition;
     }
 
-    public static void paddedRect(float pX, float pY, int col, float rounding) {
-        ImGui.getBackgroundDrawList().addRectFilled(
-                ImGui.getItemRectMinX() - pX,
-                ImGui.getItemRectMinY() - pY,
-                ImGui.getItemRectMaxX() + pX,
-                ImGui.getItemRectMaxY() + pY,
+    public static float centerHorizontally(float itemSize) {
+        float centerPos =  (ImGui.getWindowWidth() - itemSize) / 2;
+        ImGui.setCursorPosX(centerPos);
+        return centerPos;
+    }
+
+    public static void paddedRect(float paddingLeft, float paddingRight,float paddingTop, float paddingBottom, int col, float rounding) {
+        ImGui.getWindowDrawList().addRect(
+                ImGui.getItemRectMinX() - paddingLeft,
+                ImGui.getItemRectMinY() - paddingTop,
+                ImGui.getItemRectMaxX() + paddingRight,
+                ImGui.getItemRectMaxY() + paddingBottom,
                 col, rounding);
     }
 }

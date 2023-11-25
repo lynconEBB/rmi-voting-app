@@ -5,6 +5,7 @@ import unioeste.sd.common.exceptions.AuthException;
 import unioeste.sd.common.exceptions.InvalidDataException;
 
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ServerImpl implements Server {
@@ -19,6 +20,9 @@ public class ServerImpl implements Server {
 
     @Override
     public User addUser(String name, String username, String password) {
+        if (name.isBlank() || username.isBlank() || password.isBlank()) {
+            throw new InvalidDataException("All fields should be filled!");
+        }
         User user = new User(username, name, password);
         if (users.containsKey(username))
             throw new AuthException();
@@ -30,6 +34,9 @@ public class ServerImpl implements Server {
 
     @Override
     public User login(String username, String password) {
+        if (username.isBlank() || password.isBlank()) {
+            throw new InvalidDataException("All fields should be filled!");
+        }
         if (!users.containsKey(username))
             throw new AuthException("User not found!");
 
@@ -53,13 +60,19 @@ public class ServerImpl implements Server {
         if (!isValidUser(user))
             throw new AuthException("invalid User!");
         if (votingDTO.title.isBlank() || votingDTO.description.isBlank()) {
-            throw new InvalidDataException();
+            throw new InvalidDataException("All fields should be filled!");
         }
+
         for (String option : votingDTO.options){
             if (option.isBlank()) {
-                throw new InvalidDataException();
+                throw new InvalidDataException("Some options are blank!");
             }
         }
+
+        Set<String> set = new HashSet<>(votingDTO.options);
+        if (set.size() != votingDTO.options.size())
+            throw new InvalidDataException("Options cant be duplicated!");
+
 
         Voting voting = new Voting(lastId,user, votingDTO.title, votingDTO.description, votingDTO.options);
 
@@ -88,7 +101,7 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void advanceVoting(User user, Long id) throws RemoteException {
+    public void proceedVoting(User user, Long id) throws RemoteException {
         if (!isValidUser(user))
             throw new AuthException("invalid User!");
         if (!votings.containsKey(id))
@@ -99,9 +112,13 @@ public class ServerImpl implements Server {
             throw new AuthException("User its not the owner!");
 
         switch (voting.status) {
-            case CREATED -> voting.status = VotingStatus.STARTED;
+            case CREATED -> {
+                voting.status = VotingStatus.STARTED;
+                voting.startDate = LocalDateTime.now();
+            }
             case STARTED -> {
                 voting.status = VotingStatus.FINISHED;
+                voting.endDate = LocalDateTime.now();
                 int max = voting.votes.values().stream().mapToInt(v -> v).max().orElse(0);
                 for (Map.Entry<String, Integer> entry : voting.votes.entrySet()) {
                     if (entry.getValue() == max) {

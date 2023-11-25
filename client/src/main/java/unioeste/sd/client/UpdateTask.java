@@ -28,9 +28,9 @@ public class UpdateTask implements Runnable{
                     client.selectedVoting = server.getVotingById(client.getUser(), client.selectedVoting.id);
                 }
                 Thread.sleep(2000);
-                System.out.println("Updated!");
             }
         } catch (RemoteException | InterruptedException e) {
+            client.setLogged(false);
             throw new RuntimeException(e);
         }
     }

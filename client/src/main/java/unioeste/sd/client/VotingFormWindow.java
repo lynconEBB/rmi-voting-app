@@ -27,6 +27,7 @@ public class VotingFormWindow {
         this.description = new ImString();
         this.options = new ArrayList<>();
         this.options.add(new ImString());
+        this.options.add(new ImString());
         this.createdFuture = null;
     }
 
@@ -77,7 +78,7 @@ public class VotingFormWindow {
 
                 createdFuture.exceptionally(e -> {
                     showErrorMessage = true;
-                    errorMessage = e.getMessage();
+                    errorMessage = ExceptionsUtils.getRoot(e).getMessage();
                     createdFuture = null;
                     return null;
                 });

@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="056adaed-4ba4-46bd-864c-03a8160ba049" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/ExceptionsUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/UpdateTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/UpdateTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/VotingDetailWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/VotingDetailWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/VotingFormWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/VotingFormWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/WelcomeWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/main/java/unioeste/sd/client/WelcomeWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/Voting.java" beforeDir="false" afterPath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/Voting.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/VotingSimpleDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/VotingSimpleDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/VotingUniqueDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/VotingUniqueDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/remote-lib/src/main/java/unioeste/sd/common/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/main/java/unioeste/sd/server/ServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/unioeste/sd/server/ServerImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,23 +64,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Microsoft/Dev/rmi-voting-app/settings.gradle.kts",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Microsoft/Dev/rmi-voting-app/settings.gradle.kts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" singleton="false" temporary="true">
       <option name="MAIN_CLASS_NAME" value="unioeste.sd.client.MainWindow" />
@@ -137,16 +137,5 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/unioeste/sd/server/ServerImpl.java</url>
-          <line>97</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

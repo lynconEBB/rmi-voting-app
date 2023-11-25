@@ -46,8 +46,8 @@ public class VotingDetailWindow {
                         && client.selectedVoting.status != VotingStatus.FINISHED) {
                     ImGui.sameLine();
                     ImGui.setCursorPosY(ImGui.getCursorPosY() - 5);
-                    if(ImGui.button("Advance")) {
-                        client.requestAdvance();
+                    if(ImGui.button("Proceed")) {
+                        client.requestProceed();
                     }
                 }
 
@@ -92,9 +92,11 @@ public class VotingDetailWindow {
                 ImGui.setCursorPos(ImGui.getCursorPosX() + 30, ImGui.getCursorPosY() + 30);
 
                 ImGui.beginChild("Progress", ImGui.getWindowWidth() - 50, 70 * client.selectedVoting.votes.size());
-                if (client.selectedVoting.status != VotingStatus.STARTED)
+                boolean shouldDisable = false;
+                if (client.selectedVoting.status != VotingStatus.STARTED) {
                     ImGui.beginDisabled();
-
+                    shouldDisable = true;
+                }
                 ImGui.pushFont(Fonts.subtitleFont);
                 for (Map.Entry<String, Integer> option : client.selectedVoting.votes.entrySet()) {
                     if (ImGui.checkbox(option.getKey(), client.userVotes.get(option.getKey()))) {
@@ -104,7 +106,7 @@ public class VotingDetailWindow {
                     ImGui.setCursorPosY(ImGui.getCursorPosY() + 20);
                 }
 
-                if (client.selectedVoting.status != VotingStatus.STARTED)
+                if (client.selectedVoting.status != VotingStatus.STARTED && shouldDisable)
                     ImGui.endDisabled();
                 ImGui.popFont();
                 ImGui.endChild();

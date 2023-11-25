@@ -51,11 +51,13 @@ public class Client {
         });
     }
 
-    public void requestAdvance() {
+    public void requestProceed() {
         CompletableFuture.runAsync(() -> {
             try {
                 switch (selectedVoting.status) {
-                    case CREATED -> selectedVoting.status = VotingStatus.STARTED;
+                    case CREATED -> {
+                        selectedVoting.status = VotingStatus.STARTED;
+                    }
                     case STARTED -> {
                         selectedVoting.status = VotingStatus.FINISHED;
                         int max = selectedVoting.votes.values().stream().mapToInt(v -> v).max().orElse(0);
@@ -66,7 +68,7 @@ public class Client {
                         }
                     }
                 }
-                server.advanceVoting(user, selectedVoting.id);
+                server.proceedVoting(user, selectedVoting.id);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -84,7 +86,6 @@ public class Client {
             }
         });
     }
-
 
     public void setSelectedVoting(Long id) {
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
@@ -105,9 +106,9 @@ public class Client {
         });
     }
 
-    public void requestRegistration(String name, String username, String password) {
+    public void requestRegistration(String host, int port, String name, String username, String password) {
         try {
-            Registry registry = LocateRegistry.getRegistry( 1099);
+            Registry registry = LocateRegistry.getRegistry(host,port);
             server = (Server) registry.lookup("voting-server");
             User responseUser = server.addUser(name, username, password);
             setCurrentUser(responseUser);
@@ -116,9 +117,9 @@ public class Client {
         }
     }
 
-    public void requestLogin(String username, String password) {
+    public void requestLogin(String host, int port, String username, String password) {
         try {
-            Registry registry = LocateRegistry.getRegistry( 1099);
+            Registry registry = LocateRegistry.getRegistry(host, port);
             server = (Server) registry.lookup("voting-server");
             User responseUser = server.login(username, password);
             setCurrentUser(responseUser);
@@ -131,10 +132,14 @@ public class Client {
         this.user = user;
         isLogged = true;
         UpdateTask.startTask(this, server);
-
     }
+
     public boolean isLogged() {
         return isLogged;
+    }
+
+    public void setLogged(boolean logged) {
+        isLogged = logged;
     }
 
     public User getUser() {

@@ -3,6 +3,7 @@ package unioeste.sd.client;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImInt;
 import imgui.type.ImString;
 import unioeste.sd.client.ui.Fonts;
 
@@ -10,6 +11,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class WelcomeWindow {
     float buttonSizeX;
+
+    private final ImString host;
+    private final ImInt port;
 
     private final ImString newUsername;
     private final ImString newPassword;
@@ -25,6 +29,8 @@ public class WelcomeWindow {
     private String loginError;
     private CompletableFuture<Void> requestingFuture;
     public WelcomeWindow() {
+        this.host = new ImString("localhost");
+        this.port = new ImInt(1099);
         this.newPassword = new ImString();
         this.newUsername = new ImString();
         this.newName = new ImString();
@@ -51,10 +57,13 @@ public class WelcomeWindow {
         boolean shouldDisable = false;
         buttonSizeX = ImGui.calcTextSize("Sign up").x + ImGui.getStyle().getFramePaddingX() * 2;
 
-        ImGui.begin("Welcome", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoDocking);
+        ImGui.begin("Welcome to RMI Voting", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoDocking);
         {
+            ImGui.inputText("Server ip", host);
+            ImGui.inputInt("Port", port);
+            ImGui.separator();
             ImGui.pushFont(Fonts.titleFont);
-            ImGui.textColored(255,255,0,255,"Sign new user");
+            ImGui.textColored(255,255,0,255,"Register new user");
             ImGui.popFont();
             ImGui.inputText("New Name", newName);
             ImGui.inputText("New Username", newUsername );
@@ -71,9 +80,9 @@ public class WelcomeWindow {
                 shouldDisable = true;
             }
             if (ImGui.button("Sign up")) {
-                requestingFuture = CompletableFuture.runAsync(() -> client.requestRegistration(newName.get(), newUsername.get(), newPassword.get()));
+                requestingFuture = CompletableFuture.runAsync(() -> client.requestRegistration(host.get(), port.get(), newName.get(), newUsername.get(), newPassword.get()));
                 requestingFuture.exceptionally(e -> {
-                   showRegisterMessageError(e.getMessage());
+                   showRegisterMessageError(ExceptionsUtils.getRoot(e).getMessage());
                    return null;
                 });
             }
@@ -83,7 +92,7 @@ public class WelcomeWindow {
             ImGui.separator();
 
             ImGui.pushFont(Fonts.titleFont);
-            ImGui.textColored(255,255,0,255,"Sign up");
+            ImGui.textColored(255,255,0,255,"Sign in");
             ImGui.popFont();
 
             ImGui.inputText("Username", username);
@@ -100,9 +109,9 @@ public class WelcomeWindow {
                 shouldDisable = true;
             }
             if (ImGui.button("Sign in")) {
-                requestingFuture = CompletableFuture.runAsync(() -> client.requestLogin(username.get(), password.get()));
+                requestingFuture = CompletableFuture.runAsync(() -> client.requestLogin(host.get(),port.get(),username.get(), password.get()));
                 requestingFuture.exceptionally(e -> {
-                    showLoginMessageError(e.getMessage());
+                    showLoginMessageError(ExceptionsUtils.getRoot(e).getMessage());
                     return null;
                 });
             }

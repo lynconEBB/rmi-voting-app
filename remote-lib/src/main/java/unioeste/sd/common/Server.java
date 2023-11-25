@@ -10,7 +10,7 @@ public interface Server extends Remote {
     Voting createVoting(User user, VotingFormDTO votingDTO) throws RemoteException;
     List<VotingSimpleDTO> getAllVotings() throws RemoteException;
     VotingUniqueDTO getVotingById(User user, Long id) throws RemoteException;
-    void advanceVoting(User user, Long id) throws RemoteException;
+    void proceedVoting(User user, Long id) throws RemoteException;
     void vote(User user, Long id, String option) throws RemoteException;
 
 }

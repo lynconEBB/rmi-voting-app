@@ -25,6 +25,9 @@ public class App {
     }
 
     public void run() throws RemoteException, AlreadyBoundException {
+        // Change this to the correct ip
+        System.setProperty("java.rmi.server.hostname", "192.168.229.127");
+
         ServerImpl server = new ServerImpl();
         Server stub = (Server) UnicastRemoteObject.exportObject(server, 1099);
 

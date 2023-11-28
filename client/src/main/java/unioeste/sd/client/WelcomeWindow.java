@@ -29,7 +29,7 @@ public class WelcomeWindow {
     private String loginError;
     private CompletableFuture<Void> requestingFuture;
     public WelcomeWindow() {
-        this.host = new ImString("localhost");
+        this.host = new ImString("localhost", 100);
         this.port = new ImInt(1099);
         this.newPassword = new ImString();
         this.newUsername = new ImString();
@@ -80,6 +80,7 @@ public class WelcomeWindow {
                 shouldDisable = true;
             }
             if (ImGui.button("Sign up")) {
+                System.out.println(host);
                 requestingFuture = CompletableFuture.runAsync(() -> client.requestRegistration(host.get(), port.get(), newName.get(), newUsername.get(), newPassword.get()));
                 requestingFuture.exceptionally(e -> {
                    showRegisterMessageError(ExceptionsUtils.getRoot(e).getMessage());
